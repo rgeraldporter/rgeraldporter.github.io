@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Parser for Audubon's Christmas Bird Count Data"
-date:   2016-10-26
+date:   2016-10-29
 excerpt: "Some tools for improving the usability of Audubon's CBC Data."
 project: true
 tag:

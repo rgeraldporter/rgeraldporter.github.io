@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://localhost:4000/histogramr/</loc>
+<lastmod>2016-10-30T00:00:00-04:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/avitext/</loc>
+<lastmod>2016-10-30T00:00:00-04:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/cbc-parser/</loc>
+<lastmod>2016-10-29T00:00:00-04:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/birdbrain/</loc>
+<lastmod>2016-10-29T00:00:00-04:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/evgr-pufi/</loc>
 <lastmod>2016-10-28T00:00:00-04:00</lastmod>
 </url>
@@ -14,22 +30,6 @@
 </url>
 <url>
 <loc>http://localhost:4000/cbc-stats-carw/</loc>
-<lastmod>2016-10-26T00:00:00-04:00</lastmod>
-</url>
-<url>
-<loc>http://localhost:4000/histogramr/</loc>
-<lastmod>2016-10-26T00:00:00-04:00</lastmod>
-</url>
-<url>
-<loc>http://localhost:4000/cbc-parser/</loc>
-<lastmod>2016-10-26T00:00:00-04:00</lastmod>
-</url>
-<url>
-<loc>http://localhost:4000/avitext/</loc>
-<lastmod>2016-10-26T00:00:00-04:00</lastmod>
-</url>
-<url>
-<loc>http://localhost:4000/birdbrain/</loc>
 <lastmod>2016-10-26T00:00:00-04:00</lastmod>
 </url>
 <url>

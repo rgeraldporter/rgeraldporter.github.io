@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "BirdBrain: A Bird Species in JSON Format"
-date:   2016-10-26
+date:   2016-10-29
 excerpt: "A JavaScript library for working with avian species names and banding codes in the ABA region."
 project: true
 tag:
