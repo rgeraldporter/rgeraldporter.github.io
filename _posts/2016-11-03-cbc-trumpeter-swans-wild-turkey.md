@@ -14,6 +14,7 @@ tag:
 - bird records
 comments: false
 feature: /assets/img/cbc-onha/ltdu.jpg
+published: false
 ---
 
 {% include_relative cbc-snippet.md %}
