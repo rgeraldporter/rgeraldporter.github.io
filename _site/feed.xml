@@ -1,4 +1,63 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2016-12-09T22:09:36-05:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Experimenting with Knex in Node.js Testing Frameworks: Mocha vs Jasmine</title><link href="http://localhost:4000/tdd-knex-nodejs/" rel="alternate" type="text/html" title="Experimenting with Knex in Node.js Testing Frameworks: Mocha vs Jasmine" /><published>2016-12-09T00:00:00-05:00</published><updated>2016-12-09T00:00:00-05:00</updated><id>http://localhost:4000/tdd-knex-nodejs</id><content type="html" xml:base="http://localhost:4000/tdd-knex-nodejs/">&lt;p class=&quot;notice&quot;&gt;Note: There are some assumed knowledges you’ll need to have and grasp upon in order to best appreciate the content. These include: Node.js (including some ES6), unit testing, &lt;a href=&quot;https://www.npmjs.com/package/restify&quot; target=&quot;_blank&quot;&gt;Restify&lt;/a&gt; (or &lt;a href=&quot;http://expressjs.com/&quot; target=&quot;_blank&quot;&gt;Express&lt;/a&gt;), and PostgreSQL (or mySQL).&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2016-12-09T22:39:24-05:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Invasion of the European Starlings</title><link href="http://localhost:4000/cbc-stats-eust/" rel="alternate" type="text/html" title="Invasion of the European Starlings" /><published>2016-12-09T00:00:00-05:00</published><updated>2016-12-09T00:00:00-05:00</updated><id>http://localhost:4000/cbc-stats-eust</id><content type="html" xml:base="http://localhost:4000/cbc-stats-eust/">&lt;p class=&quot;notice&quot;&gt;In 2015, I took on the role of coordinator &amp;amp; compiler of the &lt;a href=&quot;http://hamiltonnature.org/birding/counts/christmas-bird-count/&quot; target=&quot;_blank&quot;&gt;Hamilton Christmas Bird Count (HCBC)&lt;/a&gt; for the Hamilton Naturalists’ Club. Lately I’ve been poring through the vast amounts of data accumulated over the decades. In a series of short posts, I explore how the Christmas Bird Count records can reveal some interesting facts about bird species in Hamilton.&lt;/p&gt;
+
+&lt;h2 id=&quot;european-starlings&quot;&gt;European Starlings&lt;/h2&gt;
+
+&lt;p&gt;By now you likely know the stories about &lt;a href=&quot;https://www.scientificamerican.com/article/call-of-the-reviled/&quot; target=&quot;_blank&quot;&gt;how European Starlings came to invade North America&lt;/a&gt;. What you may not know however, is how incredibly dominant this species was in the Hamilton Christmas Bird Count (HCBC) up until fairly recently, and how populations of starlings have begun to drop to much more reasonable sizes.&lt;/p&gt;
+
+&lt;h3 id=&quot;some-years-it-was-almost-the-christmas-starling-count&quot;&gt;Some years it was almost the Christmas Starling Count…&lt;/h3&gt;
+
+&lt;figure&gt;
+	&lt;a href=&quot;/assets/img/cbc-onha/eust-total.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-total.png&quot; /&gt;&lt;/a&gt;
+	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;Yes, that chart is &lt;strong&gt;European Starlings&lt;/strong&gt; vs &lt;strong&gt;all bird species counted&lt;/strong&gt; during the HCBCs.&lt;/p&gt;
+
+&lt;p&gt;Here’s some observations about just how massive their numbers have been:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;From 1967 through the early 1990s, starlings accounted for over two-thirds of all birds counted&lt;/li&gt;
+  &lt;li&gt;At their peak year of 1980, starlings accounted for 73,000 out of the 93,000 birds counted – that leaves only 20,000 birds that were not starlings&lt;/li&gt;
+  &lt;li&gt;Since 1955, starlings accounted for almost a half of all birds ever counted: 1.5 million out of 3.4 million&lt;/li&gt;
+  &lt;li&gt;The very first count to include the European Starling was one lone bird in 1924; within four years there were over 1700 counted&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These ratios continue to hold true when accounting for volunteer count hours: there’s little chance of this being an observational error:&lt;/p&gt;
+
+&lt;figure&gt;
+	&lt;a href=&quot;/assets/img/cbc-onha/eust-per-hour.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-per-hour.png&quot; /&gt;&lt;/a&gt;
+	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;The starling populations have dropped though since the 1990s, settling down to being between 10-15% of the overall count. This is a much more reasonable population, considering starlings are species well known to accumulate in very large flocks, especially in winter.&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;A winter plumaged starling. Dundas, Ontario.&lt;a href=&quot;https://twitter.com/hashtag/HamOnt?src=hash&quot;&gt;#HamOnt&lt;/a&gt; &lt;a href=&quot;https://twitter.com/hashtag/birds?src=hash&quot;&gt;#birds&lt;/a&gt; &lt;a href=&quot;http://t.co/wBFyGvyWzs&quot;&gt;pic.twitter.com/wBFyGvyWzs&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rob Porter (@rgeraldporter) &lt;a href=&quot;https://twitter.com/rgeraldporter/status/559891380349042688&quot;&gt;January 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Since European Starlings have been so dominant in the count in some years, it is worth taking a look at what the count looks like without them at all.&lt;/p&gt;
+
+&lt;p&gt;These charts show the total count without any starlings, followed by the per-hour rate of birds counted each year excluding starlings:&lt;/p&gt;
+
+&lt;figure&gt;
+	&lt;a href=&quot;/assets/img/cbc-onha/eust-without.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-without.png&quot; /&gt;&lt;/a&gt;
+	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;figure&gt;
+	&lt;a href=&quot;/assets/img/cbc-onha/eust-without-per-hour.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-without-per-hour.png&quot; /&gt;&lt;/a&gt;
+	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;This reveals that non-starling populations actually significantly increased in the late 1990s and early 2000s, and are currently in a general decline.&lt;/p&gt;
+
+&lt;p&gt;Someday I’ll need to see if I can assemble a similar chart of non-indigenous species (NIS) vs indigenous species. Rock Piegons, House Finches, House Sparrows, and &lt;em&gt;possibly&lt;/em&gt; Canada Geese (not NIS, but are re-introduced and arguably invasive) are just a few possible species that would be interesting to compare.&lt;/p&gt;
+
+&lt;p&gt;The invasions aren’t over yet, either. Very recently the first-ever record of a &lt;a href=&quot;http://mikeburrell.blogspot.ca/2014/09/essex-county-rarities.html&quot; target=&quot;_blank&quot;&gt;pair of Eurasian Collared-Dove breeding in Ontario&lt;/a&gt; was reported, and Eurasian Tree Sparrows have also been slowly headed towards this province. These species do not congregate in such dramatically large colonies as starlings, however, but still could serve as a competitive threat to Ontario’s native bird species.&lt;img src=&quot;http://robporter.ca/assets/img/feather-7.svg&quot; style=&quot;width:33px;height:33px;display:inline;padding-left:6px&quot; /&gt;&lt;/p&gt;
+
+&lt;figure&gt;
+    &lt;a href=&quot;/assets/img/cbc-onha/european-starling.jpg&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/european-starling.jpg&quot; /&gt;&lt;/a&gt;
+    &lt;figcaption&gt;European Starling male in alternate (breeding) plumage, McMaster Forest, Ancaster, Ontario.&lt;/figcaption&gt;
+&lt;/figure&gt;</content><category term="birding" /><category term="Christmas Bird Count" /><category term="nature" /><category term="ornithology" /><category term="European Starling" /><category term="Hamilton&amp;#44; Ontario" /><category term="bird records" /><summary type="html">A look at the populations of European Starlings in Hamilton throughout the history of the Christmas Bird Count.</summary></entry><entry><title type="html">Experimenting with Knex in Node.js Testing Frameworks: Mocha vs Jasmine</title><link href="http://localhost:4000/tdd-knex-nodejs/" rel="alternate" type="text/html" title="Experimenting with Knex in Node.js Testing Frameworks: Mocha vs Jasmine" /><published>2016-12-08T00:00:00-05:00</published><updated>2016-12-08T00:00:00-05:00</updated><id>http://localhost:4000/tdd-knex-nodejs</id><content type="html" xml:base="http://localhost:4000/tdd-knex-nodejs/">&lt;p class=&quot;notice&quot;&gt;Note: There are some assumed knowledges you’ll need to have and grasp upon in order to best appreciate the content. These include: Node.js (including some ES6), unit testing, &lt;a href=&quot;https://www.npmjs.com/package/restify&quot; target=&quot;_blank&quot;&gt;Restify&lt;/a&gt; (or &lt;a href=&quot;http://expressjs.com/&quot; target=&quot;_blank&quot;&gt;Express&lt;/a&gt;), and PostgreSQL (or mySQL).&lt;/p&gt;
 
 &lt;p&gt;One of the trickier parts of unit testing can be mocking out database connections. The ideal unit test involves only testing your own code, not external dependencies. Therefore, you will want to mock out your calls to the database and generate fake responses.&lt;/p&gt;
 
@@ -475,64 +534,7 @@ Failures:
 &lt;figure&gt;
 	&lt;a href=&quot;/assets/img/cbc-onha/evening-grosbeak2.jpg&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/evening-grosbeak2.jpg&quot; /&gt;&lt;/a&gt;
 	&lt;figcaption&gt;Evening Grosbeak, High Park, Toronto, Ontario&lt;/figcaption&gt;
-&lt;/figure&gt;</content><category term="birding" /><category term="Christmas Bird Count" /><category term="nature" /><category term="ornithology" /><category term="Evening Grosbeak" /><category term="Purple Finch" /><category term="Hamilton&amp;#44; Ontario" /><category term="Toronto&amp;#44; Ontario" /><category term="bird records" /><summary type="html">A once-abundant winter finch has all but dissapeared from Hamilton.</summary></entry><entry><title type="html">Invasion of the European Starlings</title><link href="http://localhost:4000/2016-cbc-stats-eust/" rel="alternate" type="text/html" title="Invasion of the European Starlings" /><published>2016-10-28T00:00:00-04:00</published><updated>2016-10-28T00:00:00-04:00</updated><id>http://localhost:4000/2016-cbc-stats-eust</id><content type="html" xml:base="http://localhost:4000/2016-cbc-stats-eust/">&lt;p class=&quot;notice&quot;&gt;In 2015, I took on the role of coordinator &amp;amp; compiler of the &lt;a href=&quot;http://hamiltonnature.org/birding/counts/christmas-bird-count/&quot; target=&quot;_blank&quot;&gt;Hamilton Christmas Bird Count (HCBC)&lt;/a&gt; for the Hamilton Naturalists’ Club. Lately I’ve been poring through the vast amounts of data accumulated over the decades. In a series of short posts, I explore how the Christmas Bird Count records can reveal some interesting facts about bird species in Hamilton.&lt;/p&gt;
-
-&lt;h2 id=&quot;european-starlings&quot;&gt;European Starlings&lt;/h2&gt;
-
-&lt;p&gt;By now you likely know the stories about how European Starlings came to invade North America. What you may not know however, is how incredibly dominant this species was, and how populations of starlings have begun to drop to much more reasonable sizes.&lt;/p&gt;
-
-&lt;h3 id=&quot;some-years-it-was-almost-the-christmas-starling-count&quot;&gt;Some years it was almost the Christmas Starling Count…&lt;/h3&gt;
-
-&lt;figure&gt;
-	&lt;a href=&quot;/assets/img/cbc-onha/eust-total.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-total.png&quot; /&gt;&lt;/a&gt;
-	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
-&lt;/figure&gt;
-
-&lt;p&gt;Yes, that chart is &lt;strong&gt;European Starlings&lt;/strong&gt; vs &lt;strong&gt;all bird species counted&lt;/strong&gt; during the HCBCs.&lt;/p&gt;
-
-&lt;p&gt;Here’s some observations about just how massive their numbers have been:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;From 1967 through the early 1990s, starlings accounted for over two-thirds of all birds counted&lt;/li&gt;
-  &lt;li&gt;At their peak year of 1980, starlings accounted for 73,000 out of the 93,000 birds counted – that leaves only 20,000 birds that were not starlings&lt;/li&gt;
-  &lt;li&gt;Since 1955, starlings accounted for almost a half of all birds ever counted: 1.5 million out of 3.4 million&lt;/li&gt;
-  &lt;li&gt;The very first count to include the European Starling was one lone bird in 1924; within four years there were over 1700 counted&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;In case you’re wondering, these ratios hold true even when accounting for volunteer count hours:&lt;/p&gt;
-
-&lt;figure&gt;
-	&lt;a href=&quot;/assets/img/cbc-onha/eust-per-hour.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-per-hour.png&quot; /&gt;&lt;/a&gt;
-	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
-&lt;/figure&gt;
-
-&lt;p&gt;The populations have dropped though since the 1990s, settling down to being between 10-15% of the overall count. This is a much more reasonable population, considering starlings are species well known to accumulate in very large flocks, especially in winter.&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;A winter plumaged starling. Dundas, Ontario.&lt;a href=&quot;https://twitter.com/hashtag/HamOnt?src=hash&quot;&gt;#HamOnt&lt;/a&gt; &lt;a href=&quot;https://twitter.com/hashtag/birds?src=hash&quot;&gt;#birds&lt;/a&gt; &lt;a href=&quot;http://t.co/wBFyGvyWzs&quot;&gt;pic.twitter.com/wBFyGvyWzs&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rob Porter (@rgeraldporter) &lt;a href=&quot;https://twitter.com/rgeraldporter/status/559891380349042688&quot;&gt;January 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;Since European Starlings have been so dominant in the count in some years, it is worth taking a look at what the count looks like without them at all.&lt;/p&gt;
-
-&lt;p&gt;These charts show the total count without any starlings, followed by the per-hour rate of birds counted each year excluding starlings:&lt;/p&gt;
-
-&lt;figure&gt;
-	&lt;a href=&quot;/assets/img/cbc-onha/eust-without.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-without.png&quot; /&gt;&lt;/a&gt;
-	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
-&lt;/figure&gt;
-
-&lt;figure&gt;
-	&lt;a href=&quot;/assets/img/cbc-onha/eust-without-per-hour.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/eust-without-per-hour.png&quot; /&gt;&lt;/a&gt;
-	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
-&lt;/figure&gt;
-
-&lt;p&gt;This reveals that non-starling populations actually significantly increased in the late 1990s and early 2000s, and are currently in a general decline.&lt;/p&gt;
-
-&lt;p&gt;Someday soon I’ll need to see if I can assemble a similar chart of non-indigenous species (NIS) vs indigenous species. Rock Piegons, House Finches, House Sparrows, and &lt;em&gt;possibly&lt;/em&gt; Canada Geese (not NIS, but are re-introduced and arguably invasive) are just a few possible species to compare.&lt;/p&gt;
-
-&lt;figure&gt;
-    &lt;a href=&quot;/assets/img/cbc-onha/european-starling.jpg&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/european-starling.jpg&quot; /&gt;&lt;/a&gt;
-    &lt;figcaption&gt;European Starling male in alternate (breeding) plumage, McMaster Forest, Ancaster, Ontario.&lt;/figcaption&gt;
-&lt;/figure&gt;</content><category term="birding" /><category term="Christmas Bird Count" /><category term="nature" /><category term="ornithology" /><category term="European Starling" /><category term="Hamilton&amp;#44; Ontario" /><category term="bird records" /><summary type="html">A look at the populations of European Starlings in Hamilton throughout the history of the Christmas Bird Count.</summary></entry><entry><title type="html">Winter Counts of Golden-crowned Kinglets and Brown Creepers</title><link href="http://localhost:4000/cbc-stats-1/" rel="alternate" type="text/html" title="Winter Counts of Golden-crowned Kinglets and Brown Creepers" /><published>2016-10-27T00:00:00-04:00</published><updated>2016-10-27T00:00:00-04:00</updated><id>http://localhost:4000/cbc-stats-1</id><content type="html" xml:base="http://localhost:4000/cbc-stats-1/">&lt;p class=&quot;notice&quot;&gt;In 2015, I took on the role of coordinator &amp;amp; compiler of the &lt;a href=&quot;http://hamiltonnature.org/birding/counts/christmas-bird-count/&quot; target=&quot;_blank&quot;&gt;Hamilton Christmas Bird Count (HCBC)&lt;/a&gt; for the Hamilton Naturalists’ Club. Lately I’ve been poring through the vast amounts of data accumulated over the decades. In a series of short posts, I explore how the Christmas Bird Count records can reveal some interesting facts about bird species in Hamilton.&lt;/p&gt;
+&lt;/figure&gt;</content><category term="birding" /><category term="Christmas Bird Count" /><category term="nature" /><category term="ornithology" /><category term="Evening Grosbeak" /><category term="Purple Finch" /><category term="Hamilton&amp;#44; Ontario" /><category term="Toronto&amp;#44; Ontario" /><category term="bird records" /><summary type="html">A once-abundant winter finch has all but dissapeared from Hamilton.</summary></entry><entry><title type="html">Winter Counts of Golden-crowned Kinglets and Brown Creepers</title><link href="http://localhost:4000/cbc-stats-1/" rel="alternate" type="text/html" title="Winter Counts of Golden-crowned Kinglets and Brown Creepers" /><published>2016-10-27T00:00:00-04:00</published><updated>2016-10-27T00:00:00-04:00</updated><id>http://localhost:4000/cbc-stats-1</id><content type="html" xml:base="http://localhost:4000/cbc-stats-1/">&lt;p class=&quot;notice&quot;&gt;In 2015, I took on the role of coordinator &amp;amp; compiler of the &lt;a href=&quot;http://hamiltonnature.org/birding/counts/christmas-bird-count/&quot; target=&quot;_blank&quot;&gt;Hamilton Christmas Bird Count (HCBC)&lt;/a&gt; for the Hamilton Naturalists’ Club. Lately I’ve been poring through the vast amounts of data accumulated over the decades. In a series of short posts, I explore how the Christmas Bird Count records can reveal some interesting facts about bird species in Hamilton.&lt;/p&gt;
 
 &lt;h2 id=&quot;comparing-brown-creeper--golden-crowned-kinglet&quot;&gt;Comparing Brown Creeper &amp;amp; Golden-crowned Kinglet&lt;/h2&gt;
 

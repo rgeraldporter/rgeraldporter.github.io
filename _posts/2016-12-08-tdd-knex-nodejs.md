@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Experimenting with Knex in Node.js Testing Frameworks: Mocha vs Jasmine"
-date:   2016-12-09
+date:   2016-12-08
 excerpt: "Challenges encountered using Mock-Knex in unit tests with Node.js"
 tag:
 - Node.js
