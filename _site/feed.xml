@@ -1,4 +1,318 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2016-12-01T21:59:26-05:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">The Arrival of the Carolina Wren in Hamilton</title><link href="http://localhost:4000/cbc-stats-carw/" rel="alternate" type="text/html" title="The Arrival of the Carolina Wren in Hamilton" /><published>2016-12-01T00:00:00-05:00</published><updated>2016-12-01T00:00:00-05:00</updated><id>http://localhost:4000/cbc-stats-carw</id><content type="html" xml:base="http://localhost:4000/cbc-stats-carw/">&lt;p class=&quot;notice&quot;&gt;In 2015, I took on the role of coordinator &amp;amp; compiler of the &lt;a href=&quot;http://hamiltonnature.org/birding/counts/christmas-bird-count/&quot; target=&quot;_blank&quot;&gt;Hamilton Christmas Bird Count (HCBC)&lt;/a&gt; for the Hamilton Naturalists’ Club. Lately I’ve been poring through the vast amounts of data accumulated over the decades. In a series of short posts, I explore how the Christmas Bird Count records can reveal some interesting facts about bird species in Hamilton.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2016-12-09T22:09:36-05:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Experimenting with Knex in Node.js Testing Frameworks: Mocha vs Jasmine</title><link href="http://localhost:4000/tdd-knex-nodejs/" rel="alternate" type="text/html" title="Experimenting with Knex in Node.js Testing Frameworks: Mocha vs Jasmine" /><published>2016-12-09T00:00:00-05:00</published><updated>2016-12-09T00:00:00-05:00</updated><id>http://localhost:4000/tdd-knex-nodejs</id><content type="html" xml:base="http://localhost:4000/tdd-knex-nodejs/">&lt;p class=&quot;notice&quot;&gt;Note: There are some assumed knowledges you’ll need to have and grasp upon in order to best appreciate the content. These include: Node.js (including some ES6), unit testing, &lt;a href=&quot;https://www.npmjs.com/package/restify&quot; target=&quot;_blank&quot;&gt;Restify&lt;/a&gt; (or &lt;a href=&quot;http://expressjs.com/&quot; target=&quot;_blank&quot;&gt;Express&lt;/a&gt;), and PostgreSQL (or mySQL).&lt;/p&gt;
+
+&lt;p&gt;One of the trickier parts of unit testing can be mocking out database connections. The ideal unit test involves only testing your own code, not external dependencies. Therefore, you will want to mock out your calls to the database and generate fake responses.&lt;/p&gt;
+
+&lt;p&gt;Additionally, managing schema changes to SQL databases can also be challenging. By using &lt;a href=&quot;https://www.npmjs.com/package/knex&quot; target=&quot;_blank&quot;&gt;Knex&lt;/a&gt;, managing database schema changes in Node.js is much easier, and completely documented and controlled by code. It is also a great tool for setup &amp;amp; teardown in integration tests, though lacks tools for proper mocking of unit tests.&lt;/p&gt;
+
+&lt;p&gt;This is where &lt;a href=&quot;https://www.npmjs.com/package/mock-knex&quot; target=&quot;_blank&quot;&gt;Mock-Knex&lt;/a&gt; comes in – it can make mocked database calls easy, and integrate with your existing Knex setup easily. The Mock-Knex module provides functions for assertion libraries to use in unit tests.&lt;/p&gt;
+
+&lt;p&gt;However, I discovered upon interrogating unit tests involving the &lt;code class=&quot;highlighter-rouge&quot;&gt;tracker.on()&lt;/code&gt; observable feature that were written with Mocha and Mock-Knex that it was unnervingly easy to create non-&lt;a href=&quot;http://codingismycraft.com/index.php/2016/05/25/falsifiability-and-unit-testing/&quot; target=&quot;_blank&quot;&gt;falsifiable&lt;/a&gt; tests unless very specific and unintuitive patterns were followed.&lt;/p&gt;
+
+&lt;p&gt;I did some cursory research (aka Google search) to find good example patterns of the Mock-Knex module being used with Mocha or Jasmine, but it seemed most articles out there about this module were either agnostic or evasive about which test frameworks were being used under-the-hood.&lt;/p&gt;
+
+&lt;p&gt;Thus I went forward with an experiment: is there an idea framework or combination of frameworks wherein the Mock-Knex observable &lt;code class=&quot;highlighter-rouge&quot;&gt;tracker.on()&lt;/code&gt; is fully falsifiable? Does the tracker feature have a flawed implementation, or are there problems in Mocha?&lt;/p&gt;
+
+&lt;h2 id=&quot;testing-with-mocha&quot;&gt;Testing with Mocha&lt;/h2&gt;
+
+&lt;p class=&quot;notice&quot;&gt;See the &lt;a href=&quot;https://github.com/rgeraldporter/knex-tdd-experiment&quot; target=&quot;_blank&quot;&gt;GitHub repository&lt;/a&gt; for the full code. This article references &lt;code class=&quot;highlighter-rouge&quot;&gt;src/routes/example/example.spec.js&lt;/code&gt; in four different branches depending on the framework combination being tested. In the interest of brevity only individual tests are posted as examples. For full context you’ll need to clone the repository and check out the appropriate branches.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Figure #1&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Using: Mocha, Chai (with &quot;should&quot; extension)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Branch: hypothesis/mocha-chai&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'should not get a invalid thing'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// overriding the valid default with an invalid ID&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}};&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// track the queries&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;tracker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'query'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;should&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'first'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;should&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([]);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// note that &quot;next&quot; is a chai.spy() that returns a Promise&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// otherwise assertions inside tracker.on() will be missed by Mocha&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getThing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;should&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;have&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;been&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;called&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;restify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NotFoundError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Not found'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This test does two things: verifies that the correct database query was passed into the database handler by the controller, and then verifies that the (fake) empty response from the database becomes a standard “404 Not Found” error.&lt;/p&gt;
+
+&lt;p&gt;What’s strange about this test is that a passing condition via &lt;code class=&quot;highlighter-rouge&quot;&gt;tracker.on&lt;/code&gt; results in a 404 error, which Mocha interprets as an assertion failure. Thus this test cannot pass.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Figure #2
+
+  The example controller
+    getThing
+      ✓ should get a valid thing
+      1) should not get a invalid thing
+      ✓ should not get a invalid thing
+    postThing
+      ✓ should return an error if thing is not included
+      ✓ should have postgres call the INSERT query
+      ✓ should return a 201 code on success
+
+
+  5 passing (2s)
+  1 failing
+
+  1) The example controller getThing should not get a invalid thing:
+     NotFoundError: Not found
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Two things need to happen to make this test pass &lt;em&gt;and&lt;/em&gt; be falsifiable. First, the &lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt; function spy needs to be made into a regular empty function, and not return a &lt;code class=&quot;highlighter-rouge&quot;&gt;Promise&lt;/code&gt;. The effect this has though, is that the assertions on the query itself will no longer be falsifiable. This leads to the second thing that needs to happen: I need to remove all assertion tests within the query tracker.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Figure #3&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Using: Mocha, Chai (with &quot;should&quot; extension)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Branch: hypothesis/mocha-chai&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'should not get a invalid thing'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     
+    &lt;span class=&quot;c1&quot;&gt;// setting next's spy to no longer return a Promise&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chai&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;spy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    
+     &lt;span class=&quot;c1&quot;&gt;// overriding the valid default with an invalid ID&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}};&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// just use the tracker to return a specific response from the mock DB&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// don't do any assertion tests here&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;tracker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'query'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([]);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getThing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;should&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;have&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;been&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;called&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;restify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NotFoundError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Not found'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This passes fine, but what if we want to do assertion tests on the SQL queries? For that we’ll have to write a second, separate test to specifically target it.&lt;/p&gt;
+
+&lt;p&gt;Here’s the secondary test:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Figure #4&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Using: Mocha, Chai (with &quot;should&quot; extension)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Branch: hypothesis/mocha-chai&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Note that we're passing the &quot;done()&quot; param function into the test&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'should not get a invalid thing'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// overriding the valid default with an invalid ID&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}};&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// we need try/catch or failures will be without explanation&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;tracker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'query'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;should&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'first'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;should&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// note: no &quot;return&quot; here as this is not being treated as a Promise now&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// but rather as an async function due to done() being available&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getThing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;While this works, it’s a really unweildy way to write a test, and you’d either need to write a custom function to abstract this behaviour, or be very careful to remember to use this pattern each time. Both are bad solutions.&lt;/p&gt;
+
+&lt;h3 id=&quot;why-is-this-necessary&quot;&gt;Why is this necessary?&lt;/h3&gt;
+
+&lt;p&gt;Mocha has &lt;a href=&quot;https://mochajs.org/#asynchronous-code&quot; target=&quot;_blank&quot;&gt;two ways to deal with asynchronous tests&lt;/a&gt;: you either use &lt;code class=&quot;highlighter-rouge&quot;&gt;done&lt;/code&gt; as a parameter, and call &lt;code class=&quot;highlighter-rouge&quot;&gt;done()&lt;/code&gt; when your test is complete, or you &lt;code class=&quot;highlighter-rouge&quot;&gt;return&lt;/code&gt; a Promise in the function.&lt;/p&gt;
+
+&lt;p&gt;When you use &lt;code class=&quot;highlighter-rouge&quot;&gt;done&lt;/code&gt;, you will need to deal with errors by passing them into done, for example, as &lt;code class=&quot;highlighter-rouge&quot;&gt;done(err)&lt;/code&gt;. For the Mock-Knex tracker query this doesn’t work so great as the “errors” are really assertion errors, so you need to separate your passes and failures via &lt;code class=&quot;highlighter-rouge&quot;&gt;try&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;catch&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;When you return a &lt;code class=&quot;highlighter-rouge&quot;&gt;Promise&lt;/code&gt;, and you want to spy on &lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt; will need to be a Promise itself in order for &lt;code class=&quot;highlighter-rouge&quot;&gt;tracker.on()&lt;/code&gt; to bubble up assertion errors properly. Unfortunately, other thrown errors within the controller get caught as if they are assertion errors in this pattern.&lt;/p&gt;
+
+&lt;h3 id=&quot;mocha-woes&quot;&gt;Mocha woes&lt;/h3&gt;
+
+&lt;p&gt;Unfortunately problems with a single test combining assertions for expected failures/errors in addition to listening to query events seems to be endemic in Mocha.&lt;/p&gt;
+
+&lt;p&gt;The best solution within the Mocha ecosystem of frameworks that I have found is &lt;a href=&quot;http://sinonjs.org/&quot; target=&quot;_blank&quot;&gt;Sinon.JS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Figure #5&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Using: Mocha, Sinon&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Branch: hypothesis/mocha-sinon&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'should not get a invalid thing'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// With sinon it appears to be fine to have next() not return a Promise&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// but only because of a quirky bug of sorts...&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sinon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;spy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// overriding the valid default with an invalid ID&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}};&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// Note that we're using the Node.js built-in `assert` library&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;tracker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'query'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'first'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([]);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getThing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;withArgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;restify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NotFoundError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Not found'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;called&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;With this pattern, tests work correctly in that you can pass and fail tests, however failures will be sorely lacking details in some cases. Any failure made in &lt;code class=&quot;highlighter-rouge&quot;&gt;tracker.on()&lt;/code&gt; will bubble up as a vague &lt;code class=&quot;highlighter-rouge&quot;&gt;false === true&lt;/code&gt; failure.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Figure #6
+
+  The example controller
+    getThing
+      ✓ should get a valid thing (39ms)
+      1) should not get a invalid thing
+    postThing
+      ✓ should return an error if thing is not included
+      ✓ should have postgres call the INSERT query
+      ✓ should return a 201 code on success
+
+
+  4 passing (1s)
+  1 failing
+
+  1) The example controller getThing should not get a invalid thing:
+
+      AssertionError: false == true
+      + expected - actual
+
+      -false
+      +true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Yes, this does capture failures so the test is correctly falsifiable, but any test failures would need to be followed up with investigations about what exactly failed. It certainly isn’t ideal, and feels more like this is functioning this way not by design, but by a quirky bug at best.&lt;/p&gt;
+
+&lt;h2 id=&quot;one-more-try-with-mocha&quot;&gt;One more try with Mocha&lt;/h2&gt;
+
+&lt;p&gt;For my last test with Mocha, I substituted in TestDouble as the library of choice for spies and mocks. It &lt;a href=&quot;http://blog.testdouble.com/posts/2016-03-13-testdouble-vs-sinon.html&quot; target=&quot;_blank&quot;&gt;strongly bills itself as an alternative to Sinon&lt;/a&gt; and has a very attractive simplicity to its API.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately my experimenting revealed it had the exact same problem as Sinon, plus also created even more problems with the &lt;code class=&quot;highlighter-rouge&quot;&gt;tracker.on()&lt;/code&gt; assertions, where every test that had assertions occur in the tracker before reaching the TestDouble &lt;code class=&quot;highlighter-rouge&quot;&gt;td.verify()&lt;/code&gt; call caused the verify function to lay claim to the previous failures.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Figure #7&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Using: Mocha, TestDouble&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Branch: hypothesis/mocha-testdouble&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'should get a valid thing'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;tracker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'query'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'first'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// this next one is 111, so will throw assertion failure&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;110&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+        &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'some data'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getThing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;td&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;verify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'some data'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}));&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In this example, I’ve intentionally made the &lt;code class=&quot;highlighter-rouge&quot;&gt;assert.equal()&lt;/code&gt; fail a test where it checks if the value is &lt;code class=&quot;highlighter-rouge&quot;&gt;110&lt;/code&gt; (it’s really &lt;code class=&quot;highlighter-rouge&quot;&gt;111&lt;/code&gt;). But the result is not good.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Figure #8
+
+  The example controller
+    getThing
+      1) should get a valid thing
+      ✓ should not get a invalid thing
+    postThing
+      ✓ should return an error if thing is not included
+      - should have postgres call the INSERT query
+      ✓ should have postgres call the INSERT query
+      ✓ should return a 201 code on success
+
+
+  4 passing (1s)
+  1 pending
+  1 failing
+
+  1) The example controller getThing should get a valid thing:
+     Error: Unsatisfied verification on test double.
+
+  Wanted:
+    - called with `(200, {value: &quot;some data&quot;})`.
+
+  But there were no invocations of the test double.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In short, since something failed before TestDouble could try its verify, it complains that it never got the invocation and that complaint seems to supercede any assertion failures from within the tracker. Technically this test is still falsifiable, but the message explaining the source of the failure is quite misleading.&lt;/p&gt;
+
+&lt;h2 id=&quot;working-with-jasmine&quot;&gt;Working with Jasmine&lt;/h2&gt;
+
+&lt;p&gt;Jasmine, while very similar, has some significant differences to Mocha. The key difference for the purposes of this experiment is that it does not require other libraries to fill in features such as spies and mocks – these come built in.&lt;/p&gt;
+
+&lt;p&gt;It also, thankfully, has no problems with handling my tracker code!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Figure #9&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Using: Jasmine&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Branch: hypothesis/jasmine&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'should not get a invalid thing'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// use a Jasmine spy for next&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;jasmine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createSpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// overriding the valid default with an invalid ID&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}};&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;tracker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'query'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toEqual&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'first'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toEqual&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([]);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getThing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toHaveBeenCalledWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;restify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NotFoundError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Not found'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It passes. But can it fail? If I take &lt;code class=&quot;highlighter-rouge&quot;&gt;expect(query.bindings[0]).toEqual(112);&lt;/code&gt; and change the value to, say, &lt;code class=&quot;highlighter-rouge&quot;&gt;111&lt;/code&gt;, let’s see what happens…&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Figure #10
+
+Started
+.F..
+
+Failures:
+1) The example controller getThing should not get a invalid thing
+  Message:
+    Expected 112 to equal 111.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;OK! Now, what is the test we have on &lt;code class=&quot;highlighter-rouge&quot;&gt;next()&lt;/code&gt; doesn’t pass? Let’s change &lt;code class=&quot;highlighter-rouge&quot;&gt;expect(next).toHaveBeenCalledWith(new restify.NotFoundError('Not found'));&lt;/code&gt; to expect a &lt;code class=&quot;highlighter-rouge&quot;&gt;BadRequestError&lt;/code&gt; error instead.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Figure #11
+
+Started
+.F..
+
+Failures:
+1) The example controller getThing should not get a invalid thing
+  Message:
+    Expected spy unknown to have been called with [ BadRequestError: Bad request! ] but actual calls were [ NotFoundError: Not found ].
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Again, full marks. We not only have a properly falsifiable test, but failures give meaningful data on what actually failed.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Clearly there are problems with the combination of Mocha and Mock-Knex under specific circumstances. These issues generally centre around the mixture of testing error conditions and tracking queries, specifically.&lt;/p&gt;
+
+&lt;p&gt;I don’t think it would be fair here to lay blame on either of the libraries dicussed here, as both are quite robust and capable tools, it just seems that under some circumstances, they currently do not play well together. There does appear to be work-arounds, though they are far from ideal. I’ll continue to experiment to see if there can perhaps be a fix made in Mock-Knex to account for this behaviour.&lt;/p&gt;
+
+&lt;p&gt;What does appear certain is that Mock-Knex and Jasmine work together very well. So far in my testing I have seen no issues with missing failures or inability to pass tests. It is not as pretty of an API as something like TestDouble, and the resulting output is also rather basic, but in the end nothing beats a tool that does what it’s supposed to do.&lt;img src=&quot;http://robporter.ca/assets/img/feather-7.svg&quot; style=&quot;width:33px;height:33px;display:inline;padding-left:6px&quot; /&gt;&lt;/p&gt;</content><category term="Node.js" /><category term="Javascript" /><category term="Knex" /><category term="Mocha" /><category term="Mock-Knex" /><category term="TDD" /><category term="unit testing" /><category term="Restify" /><category term="Express" /><category term="PostgreSQL" /><category term="Programming" /><summary type="html">Challenges encountered using Mock-Knex in unit tests with Node.js</summary></entry><entry><title type="html">The Arrival of the Carolina Wren in Hamilton</title><link href="http://localhost:4000/carolina-wren-onha-cbc/" rel="alternate" type="text/html" title="The Arrival of the Carolina Wren in Hamilton" /><published>2016-12-01T00:00:00-05:00</published><updated>2016-12-01T00:00:00-05:00</updated><id>http://localhost:4000/carolina-wren-onha-cbc</id><content type="html" xml:base="http://localhost:4000/carolina-wren-onha-cbc/">&lt;p class=&quot;notice&quot;&gt;In 2015, I took on the role of coordinator &amp;amp; compiler of the &lt;a href=&quot;http://hamiltonnature.org/birding/counts/christmas-bird-count/&quot; target=&quot;_blank&quot;&gt;Hamilton Christmas Bird Count (HCBC)&lt;/a&gt; for the Hamilton Naturalists’ Club. Lately I’ve been poring through the vast amounts of data accumulated over the decades. In a series of short posts, I explore how the Christmas Bird Count records can reveal some interesting facts about bird species in Hamilton.&lt;/p&gt;
 
 &lt;h2 id=&quot;carolina-wren-a-non-migratory-resident&quot;&gt;Carolina Wren: A Non-Migratory Resident&lt;/h2&gt;
 
