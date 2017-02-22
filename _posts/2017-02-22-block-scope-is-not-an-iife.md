@@ -10,6 +10,7 @@ tag:
 - IIFE
 - Programming
 comments: false
+published: false
 feature: /assets/img/tychoInst6.gif
 ---
 
