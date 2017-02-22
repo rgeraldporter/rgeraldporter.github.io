@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Beware: Javascript's Block Scope as an IIFE is... Iffy"
+title:  "Beware: Using Javascript's Block Scope as an IIFE can be... Iffy"
 date:   2017-02-22
 excerpt: "Many assume this ES6 feature is equivalent to an IIFE, but it can be quite leaky"
 tag:
