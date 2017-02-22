@@ -13,13 +13,13 @@ comments: false
 feature: /assets/img/tychoInst6.gif
 ---
 
-The advent of "ES6" Javascript brought many game-changing features that were desperately needed in the language. The introduction of `let` and `const` are especially important, as they allowed for better control over variables and scoping.
+The advent of [ES6 Javascript](http://es6-features.org/){:target="_blank"} brought many game-changing features that were desperately needed in the language. The introduction of `let` and `const` are especially important, as they allowed for better control over variables and scoping.
 
 Another celebrated new feature was the introduction of **block scoping**, which allows you to wrap any arbitrary piece of code in braces to indicate, well, a block scope.
 
-Countless [guides](https://jack.ofspades.com/es6-iife-with-fat-arrow-functions/){:target="_blank"} [out there](http://wesbos.com/es6-block-scope-iife/){:target="_blank"} [tout this](https://medium.freecodecamp.com/5-javascript-bad-parts-that-are-fixed-in-es6-c7c45d44fd81#.pvazi981g){:target="_blank"} [as the successor](http://www.benmvp.com/learning-es6-block-level-scoping-let-const/){:target="_blank"} to the **immediately-invoked function expression** (IIFE), which if true, would be worth celebrating as this method is a bit awkward looking.
+Countless [guides](https://jack.ofspades.com/es6-iife-with-fat-arrow-functions/){:target="_blank"} [out there](http://wesbos.com/es6-block-scope-iife/){:target="_blank"} [tout this](https://medium.freecodecamp.com/5-javascript-bad-parts-that-are-fixed-in-es6-c7c45d44fd81#.pvazi981g){:target="_blank"} [as the successor](http://www.benmvp.com/learning-es6-block-level-scoping-let-const/){:target="_blank"} to the **immediately-invoked function expression** (IIFE) -- normally used to isolate the scope of a given block of Javascript. If block scoping really did fully replaces the IIFE, this would be worth celebrating as the IIFE method is a bit awkward looking.
 
-What most guides don't mention however, is that the IIFE and the block scope not actually equal.
+What most guides don't mention however, is that the IIFE and the block scope are not exactly equivalent.
 
 ## Leaky functions
 
@@ -119,7 +119,7 @@ Here I have block scoped each case, and thus `result` can never leak out. While 
 
 ## In search of a successor to IIFEs
 
-So far I still have no exact functional alternative to writing the awkward IIFE with in Javascript using any of the newer ES6 (or ES2016/ES2017) features -- unless of course you don't need to declare functions. IIFEs are still a staple to frameworks [like Angular 1.x](https://toddmotto.com/minimal-angular-module-syntax-approach-using-an-iife/#introducing-an-iife){:target="_blank"} precisely so that function declarations can be scoped. The best one can do in a refactor these frameworks is to convert IIFEs to use arrow functions:
+So far I still have no exact functional alternative to writing the awkward IIFE with in Javascript using any of the newer ES6 (or ES2016/ES2017) features -- unless of course you don't need to declare functions -- but even then, I don't believe the leaky-scope for functions in a block scope is widely known, so you may risk future developers in your code making assuptions about any block scoping. IIFEs are still a staple to frameworks [like Angular 1.x](https://toddmotto.com/minimal-angular-module-syntax-approach-using-an-iife/#introducing-an-iife){:target="_blank"} precisely so that function declarations can be scoped. The best one can do in a refactor these frameworks is to convert IIFEs to use arrow functions:
 
 {% highlight js %}
 () => {
