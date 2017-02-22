@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Beware: Using Javascript's Block Scope as an IIFE can be... Iffy"
-date:   2017-02-22
-excerpt: "Many assume this ES6 feature is equivalent to an IIFE, but it can be quite leaky"
+date:   2017-02-24
+excerpt: "Many assume this ES6 feature is equivalent to an IIFE, but it can be quite leaky if you're not careful"
 tag:
 - Javascript
 - ES6
@@ -130,3 +130,5 @@ So far I still have no exact functional alternative to writing the awkward IIFE 
 {% endhighlight %}
 
 ... but it's still ugly, and could be considered less clear about what is going on -- not to mention the [lexical scoping](https://toddmotto.com/es6-arrow-functions-syntaxes-and-lexical-scoping/){:target="_blank"} issues this could introduce.<img src="http://robporter.ca/assets/img/feather-7.svg" style="width:33px;height:33px;display:inline;padding-left:6px" />
+
+* For reference, a quick test you can run to reveal a function leaking from block scope: [blockscope.js](https://gist.github.com/rgeraldporter/3f94db1d0b5515789c9675cb659b7cc3){:target="_blank"}
