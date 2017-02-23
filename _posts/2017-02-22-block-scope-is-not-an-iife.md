@@ -1,16 +1,17 @@
 ---
 layout: post
 title:  "Beware: Using Javascript's Block Scope as an IIFE can be... Iffy"
-date:   2017-02-24
+date:   2017-02-22
 excerpt: "Many assume this ES6 feature is equivalent to an IIFE, but it can be quite leaky if you're not careful"
 tag:
 - Javascript
 - ES6
+- transpiling
 - Node.js
 - IIFE
+- Angular.js
 - Programming
 comments: false
-published: false
 feature: /assets/img/tychoInst6.gif
 ---
 
@@ -18,13 +19,15 @@ The advent of [ES6 Javascript](http://es6-features.org/){:target="_blank"} broug
 
 Another celebrated new feature was the introduction of **block scoping**, which allows you to wrap any arbitrary piece of code in braces to indicate, well, a block scope.
 
-Countless [guides](https://jack.ofspades.com/es6-iife-with-fat-arrow-functions/){:target="_blank"} [out there](http://wesbos.com/es6-block-scope-iife/){:target="_blank"} [tout this](https://medium.freecodecamp.com/5-javascript-bad-parts-that-are-fixed-in-es6-c7c45d44fd81#.pvazi981g){:target="_blank"} [as the successor](http://www.benmvp.com/learning-es6-block-level-scoping-let-const/){:target="_blank"} to the **immediately-invoked function expression** (IIFE) -- normally used to isolate the scope of a given block of Javascript. If block scoping really did fully replaces the IIFE, this would be worth celebrating as the IIFE method is a bit awkward looking.
+Countless [guides](https://jack.ofspades.com/es6-iife-with-fat-arrow-functions/){:target="_blank"} [out there](http://wesbos.com/es6-block-scope-iife/){:target="_blank"} [tout this](https://medium.freecodecamp.com/5-javascript-bad-parts-that-are-fixed-in-es6-c7c45d44fd81#.pvazi981g){:target="_blank"} [as the successor](http://www.benmvp.com/learning-es6-block-level-scoping-let-const/){:target="_blank"} to the **immediately-invoked function expression** (IIFE) -- normally used to isolate the scope of a given block of Javascript.
 
-What most guides don't mention however, is that the IIFE and the block scope are not exactly equivalent.
+However, there are a series of conditions that need to be met in order to fulfill block scope's destiny to become the fill-in for the awkward IIFE.
 
 ## Leaky functions
 
-The problem with block scoping emerges when you attempt to use a block to scope a declared function. For example:
+Out of the box, if you were to use block scope right now on Chrome, Safari, or Firefox (and likely other browsers and Node.js), there are some problems with block scope being leaky.
+
+These issues begin to emerge when you attempt to use a block to scope a declared function. For example:
 
 {% highlight js %}
 // IIFE
@@ -51,13 +54,27 @@ as compared with:
 foo();
 {% endhighlight %}
 
-So if the block scope is leaky to something as basic as a function declaration, why are so many celebrating it as an alternative to the IIFE?
+The solution to this problem, is to force the Javascript runtime into "strict" mode, in the scope of where the block scope is declared. Like this:
+
+as compared with:
+{% highlight js %}
+'use strict';
+// block scope
+{
+    function foo () {
+        return true;
+    }
+}
+
+// throws an error
+foo();
+{% endhighlight %}
 
 ## Context is key
 
-Most discussions about block scoping are specifically referencing the use of `const` and `let` declarations within a block. This is the case where the block scope shines: these kinds of declarations never leak outside of the scope.
+Most discussions about block scoping are specifically referencing the use of `const` and `let` declarations within a block. This is the case where the block scope shines, out-of-the-box, without any stict mode: the ES6 declarations of `let`, `const`, and even `class` never leak outside of the scope.
 
-Let's see what happens when I rewrite `foo()` as a **constant function expression**:
+Let's see what happens when I rewrite `foo()` as a **constant function expression** (CFE... can I coin that?):
 
 {% highlight js %}
 {
@@ -68,68 +85,83 @@ Let's see what happens when I rewrite `foo()` as a **constant function expressio
 foo();
 {% endhighlight %}
 
-## Uses for block scope?
+However, keeping declared functions (using the `function` keyword) contained within the block scope requires strict mode to be enabled, and that isn't usually mentioned in guides that discuss using this technique.
 
-If you're using constant function expressions (CFEs? Can I coin that please?), then block scoping works great for containing your functions. I will admit, however, I have not found many great uses for this yet. Generally if you are using CFEs exclusively, you are probably writing in a functional style, and I've not seen much done with block scoping in functional Javascript (at least, not yet).
+Also of note: `var` will never contain itself within a block scope, no matter what you try. It will always leak out, and while there's not really any great reasons to use `var` any longer, as you'll see shortly, transpilers still do.
 
-A problem that block scoping introduces is that it does increase the [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity){:target="_blank"} of a function -- much like adding an `if` or `for` statement. (These are also frowned upon, if not outright banned, in more functional style.)
+## Transpiling with Babel and Traceur
 
-One good use I've put them to though, is to help add block scope to language features that lack this. The best example would be `case` blocks in the `switch` statement. `case` labels have always looked odd in Javascript, but if you add block scoping, they look more at home:
+If you're writing client-side ES6 code, even with the high levels of compliance we're starting to see today, you're still likely to be transpiling down to ES5.
 
-{% highlight js %}
-// without block scoping:
-var counter = 0;
-var result;
+Transpilers work to make your code work as closely to perfect as possible in an older version of Javascript. Usually this amounts to something less efficient being used -- it's usually not something that a developer would notice any difference in behaviour.
 
-switch (bar) {
-    
-    case 'one':
-        result = getResult(bar);
-        counter = 1 + result;
-        break;
+Oddly, block scoping in [Babel](https://babeljs.io/){:target="_blank"} is one of those rare cases where things do act differently.
 
-    case 'two':
-        result = getADifferentResult(bar);
-        counter = 2 + result;
-        break;
-}
-{% endhighlight %}
-
-It's not a very sophisticated example, but one side effect of having to do some calculations inside `case` labels is that the `var result` used needs to be declared earlier, and thus shared with the whole scope. Compare this with using block scoping and a `const` inside:
+A practical example would be taking some Angular 1.x code, and instead of wrapping a file with an IIFE, let's wrap it with block scoping:
 
 {% highlight js %}
-// with block scoping:
-let counter = 0;
+'use strict';
+{
+    angular
+        .module( 'myModule' )
+        .component( 'myFoo', {
+            templateUrl: '/templates/components/foo.html',
+            bindings   : {},
+            controller : Foo
+        } );
 
-switch (bar) {
-    
-    case 'one': {
-        const result = getResult(bar);
-        counter = 1 + result;
-        break;
-    }
-    case 'two': {
-        const result = getADifferentResult(bar);
-        counter = 2 + result;
-        break;
+    Foo.$inject = [ 'Something' ];
+
+    function Foo( Something ) {
+      // do stuff
     }
 }
 {% endhighlight %}
 
-Here I have block scoped each case, and thus `result` can never leak out. While the scale of this example is quite small of course, in the bigger picture, scoping in this way allows the [Javascript garbage collector](https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/){:target="_blank"} to do its work.
-
-## In search of a successor to IIFEs
-
-So far I still have no exact functional alternative to writing the awkward IIFE with in Javascript using any of the newer ES6 (or ES2016/ES2017) features -- unless of course you don't need to declare functions -- but even then, I don't believe the leaky-scope for functions in a block scope is widely known, so you may risk future developers in your code making assuptions about any block scoping. IIFEs are still a staple to frameworks [like Angular 1.x](https://toddmotto.com/minimal-angular-module-syntax-approach-using-an-iife/#introducing-an-iife){:target="_blank"} precisely so that function declarations can be scoped. The best one can do in a refactor these frameworks is to convert IIFEs to use arrow functions:
+Run this through Babel (in ES2015/ES6 mode), and the result is:
 
 {% highlight js %}
-() => {
-    function foo () {
-        return true;
-    }
-}();
+'use strict';
+
+{
+    var Foo = function Foo(Something) {
+        // do stuff
+    };
+
+    angular.module('myModule').component('myFoo', {
+        templateUrl: '/templates/components/foo.html',
+        bindings: {},
+        controller: Foo
+    });
+
+    Foo.$inject = ['Something'];
+}
 {% endhighlight %}
 
-... but it's still ugly, and could be considered less clear about what is going on -- not to mention the [lexical scoping](https://toddmotto.com/es6-arrow-functions-syntaxes-and-lexical-scoping/){:target="_blank"} issues this could introduce.<img src="http://robporter.ca/assets/img/feather-7.svg" style="width:33px;height:33px;display:inline;padding-left:6px" />
+**Note that the function declaration is now a function expression, using `var`.** Unfortunately, `var` leaks out of block scope by design (it is function scoped, not block scoped), and the whole point of wrapping the file in an IIFE is lost as the function now lives in global scope.
+
+Running this through an alternative, [Traceur](https://github.com/google/traceur-compiler){:target="_blank"}, basically results in the same thing:
+
+{% highlight js %}
+$traceurRuntime.ModuleStore.getAnonymousModule(function() {
+  "use strict";
+  {
+    var Foo = function(Something) {};
+    angular.module('myModule').component('myFoo', {
+      templateUrl: '/templates/components/foo.html',
+      bindings: {},
+      controller: Foo
+    });
+    Foo.$inject = ['Something'];
+  }
+  return {};
+});
+{% endhighlight %}
+
+Why Babel and Traceur don't just convert the block into an IIFE, I'm not sure. Certainly if you've declared you'd like the block handled strictly, I would think that is enough to infer that transpiliting to an IIFE.
+
+For Babel, the only way to get a more correct result is to use the ES2016 setting, however that may be making too much of an assumption about the freshness of your users browsers.
+
+In coming years, block scope is certain to replace the need for IIFEs. Until that time, however, be very careful about using them, and to use them effectively and without side-effects, don't make assumptions -- make good tests.<img src="http://robporter.ca/assets/img/feather-7.svg" style="width:33px;height:33px;display:inline;padding-left:6px" />
 
 * For reference, a quick test you can run to reveal a function leaking from block scope: [blockscope.js](https://gist.github.com/rgeraldporter/3f94db1d0b5515789c9675cb659b7cc3){:target="_blank"}

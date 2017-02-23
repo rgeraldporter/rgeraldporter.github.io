@@ -1,4 +1,143 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-02-22T10:28:20-05:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Chrome Autofill Woes</title><link href="http://localhost:4000/chrome-autofill-woes/" rel="alternate" type="text/html" title="Chrome Autofill Woes" /><published>2017-02-21T00:00:00-05:00</published><updated>2017-02-21T00:00:00-05:00</updated><id>http://localhost:4000/chrome-autofill-woes</id><content type="html" xml:base="http://localhost:4000/chrome-autofill-woes/">&lt;p&gt;There’s no doubt that Google Chrome has been an overwhelming net-benefit to an open web. New HTML standards get adopted rather rapidly now, and most browsers now are updated with great frequency due to Google’s (and Mozilla’s) agressive update schedule… even if &lt;a href=&quot;http://www.techradar.com/news/internet/version-numbers-have-become-meaningless-1077921&quot; target=&quot;_blank&quot;&gt;their version numbering makes little sense&lt;/a&gt;.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-02-22T21:43:25-05:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Beware: Using Javascript’s Block Scope as an IIFE can be… Iffy</title><link href="http://localhost:4000/block-scope-is-not-an-iife/" rel="alternate" type="text/html" title="Beware: Using Javascript's Block Scope as an IIFE can be... Iffy" /><published>2017-02-22T00:00:00-05:00</published><updated>2017-02-22T00:00:00-05:00</updated><id>http://localhost:4000/block-scope-is-not-an-iife</id><content type="html" xml:base="http://localhost:4000/block-scope-is-not-an-iife/">&lt;p&gt;The advent of &lt;a href=&quot;http://es6-features.org/&quot; target=&quot;_blank&quot;&gt;ES6 Javascript&lt;/a&gt; brought many game-changing features that were desperately needed in the language. The introduction of &lt;code class=&quot;highlighter-rouge&quot;&gt;let&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;const&lt;/code&gt; are especially important, as they allowed for better control over variables and scoping.&lt;/p&gt;
+
+&lt;p&gt;Another celebrated new feature was the introduction of &lt;strong&gt;block scoping&lt;/strong&gt;, which allows you to wrap any arbitrary piece of code in braces to indicate, well, a block scope.&lt;/p&gt;
+
+&lt;p&gt;Countless &lt;a href=&quot;https://jack.ofspades.com/es6-iife-with-fat-arrow-functions/&quot; target=&quot;_blank&quot;&gt;guides&lt;/a&gt; &lt;a href=&quot;http://wesbos.com/es6-block-scope-iife/&quot; target=&quot;_blank&quot;&gt;out there&lt;/a&gt; &lt;a href=&quot;https://medium.freecodecamp.com/5-javascript-bad-parts-that-are-fixed-in-es6-c7c45d44fd81#.pvazi981g&quot; target=&quot;_blank&quot;&gt;tout this&lt;/a&gt; &lt;a href=&quot;http://www.benmvp.com/learning-es6-block-level-scoping-let-const/&quot; target=&quot;_blank&quot;&gt;as the successor&lt;/a&gt; to the &lt;strong&gt;immediately-invoked function expression&lt;/strong&gt; (IIFE) – normally used to isolate the scope of a given block of Javascript.&lt;/p&gt;
+
+&lt;p&gt;However, there are a series of conditions that need to be met in order to fulfill block scope’s destiny to become the fill-in for the awkward IIFE.&lt;/p&gt;
+
+&lt;h2 id=&quot;leaky-functions&quot;&gt;Leaky functions&lt;/h2&gt;
+
+&lt;p&gt;Out of the box, if you were to use block scope right now on Chrome, Safari, or Firefox (and likely other browsers and Node.js), there are some problems with block scope being leaky.&lt;/p&gt;
+
+&lt;p&gt;These issues begin to emerge when you attempt to use a block to scope a declared function. For example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// IIFE&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// fails, as foo() is undefined outside of the IIFE&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;as compared with:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// block scope&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// returns &quot;true&quot;, is accessible&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The solution to this problem, is to force the Javascript runtime into “strict” mode, in the scope of where the block scope is declared. Like this:&lt;/p&gt;
+
+&lt;p&gt;as compared with:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;s1&quot;&gt;'use strict'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// block scope&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// throws an error&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;context-is-key&quot;&gt;Context is key&lt;/h2&gt;
+
+&lt;p&gt;Most discussions about block scoping are specifically referencing the use of &lt;code class=&quot;highlighter-rouge&quot;&gt;const&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;let&lt;/code&gt; declarations within a block. This is the case where the block scope shines, out-of-the-box, without any stict mode: the ES6 declarations of &lt;code class=&quot;highlighter-rouge&quot;&gt;let&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;const&lt;/code&gt;, and even &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; never leak outside of the scope.&lt;/p&gt;
+
+&lt;p&gt;Let’s see what happens when I rewrite &lt;code class=&quot;highlighter-rouge&quot;&gt;foo()&lt;/code&gt; as a &lt;strong&gt;constant function expression&lt;/strong&gt; (CFE… can I coin that?):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// fails, is undefined outside of the block scope&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;However, keeping declared functions (using the &lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt; keyword) contained within the block scope requires strict mode to be enabled, and that isn’t usually mentioned in guides that discuss using this technique.&lt;/p&gt;
+
+&lt;p&gt;Also of note: &lt;code class=&quot;highlighter-rouge&quot;&gt;var&lt;/code&gt; will never contain itself within a block scope, no matter what you try. It will always leak out, and while there’s not really any great reasons to use &lt;code class=&quot;highlighter-rouge&quot;&gt;var&lt;/code&gt; any longer, as you’ll see shortly, transpilers still do.&lt;/p&gt;
+
+&lt;h2 id=&quot;transpiling-with-babel-and-traceur&quot;&gt;Transpiling with Babel and Traceur&lt;/h2&gt;
+
+&lt;p&gt;If you’re writing client-side ES6 code, even with the high levels of compliance we’re starting to see today, you’re still likely to be transpiling down to ES5.&lt;/p&gt;
+
+&lt;p&gt;Transpilers work to make your code work as closely to perfect as possible in an older version of Javascript. Usually this amounts to something less efficient being used – it’s usually not something that a developer would notice any difference in behaviour.&lt;/p&gt;
+
+&lt;p&gt;Oddly, block scoping in &lt;a href=&quot;https://babeljs.io/&quot; target=&quot;_blank&quot;&gt;Babel&lt;/a&gt; is one of those rare cases where things do act differently.&lt;/p&gt;
+
+&lt;p&gt;A practical example would be taking some Angular 1.x code, and instead of wrapping a file with an IIFE, let’s wrap it with block scoping:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;s1&quot;&gt;'use strict'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'myModule'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'myFoo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/templates/components/foo.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;bindings&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;controller&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$inject&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Something'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Something&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;// do stuff&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Run this through Babel (in ES2015/ES6 mode), and the result is:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;s1&quot;&gt;'use strict'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// do stuff&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'myModule'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'myFoo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/templates/components/foo.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$inject&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Something'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Note that the function declaration is now a function expression, using &lt;code class=&quot;highlighter-rouge&quot;&gt;var&lt;/code&gt;.&lt;/strong&gt; Unfortunately, &lt;code class=&quot;highlighter-rouge&quot;&gt;var&lt;/code&gt; leaks out of block scope by design (it is function scoped, not block scoped), and the whole point of wrapping the file in an IIFE is lost as the function now lives in global scope.&lt;/p&gt;
+
+&lt;p&gt;Running this through an alternative, &lt;a href=&quot;https://github.com/google/traceur-compiler&quot; target=&quot;_blank&quot;&gt;Traceur&lt;/a&gt;, basically results in the same thing:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;nx&quot;&gt;$traceurRuntime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ModuleStore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getAnonymousModule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;use strict&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'myModule'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'myFoo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;templateUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/templates/components/foo.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;bindings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$inject&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Something'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Why Babel and Traceur don’t just convert the block into an IIFE, I’m not sure. Certainly if you’ve declared you’d like the block handled strictly, I would think that is enough to infer that transpiliting to an IIFE.&lt;/p&gt;
+
+&lt;p&gt;For Babel, the only way to get a more correct result is to use the ES2016 setting, however that may be making too much of an assumption about the freshness of your users browsers.&lt;/p&gt;
+
+&lt;p&gt;In coming years, block scope is certain to replace the need for IIFEs. Until that time, however, be very careful about using them, and to use them effectively and without side-effects, don’t make assumptions – make good tests.&lt;img src=&quot;http://robporter.ca/assets/img/feather-7.svg&quot; style=&quot;width:33px;height:33px;display:inline;padding-left:6px&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;For reference, a quick test you can run to reveal a function leaking from block scope: &lt;a href=&quot;https://gist.github.com/rgeraldporter/3f94db1d0b5515789c9675cb659b7cc3&quot; target=&quot;_blank&quot;&gt;blockscope.js&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="Javascript" /><category term="ES6" /><category term="transpiling" /><category term="Node.js" /><category term="IIFE" /><category term="Angular.js" /><category term="Programming" /><summary type="html">Many assume this ES6 feature is equivalent to an IIFE, but it can be quite leaky if you're not careful</summary></entry><entry><title type="html">Chrome Autofill Woes</title><link href="http://localhost:4000/chrome-autofill-woes/" rel="alternate" type="text/html" title="Chrome Autofill Woes" /><published>2017-02-21T00:00:00-05:00</published><updated>2017-02-21T00:00:00-05:00</updated><id>http://localhost:4000/chrome-autofill-woes</id><content type="html" xml:base="http://localhost:4000/chrome-autofill-woes/">&lt;p&gt;There’s no doubt that Google Chrome has been an overwhelming net-benefit to an open web. New HTML standards get adopted rather rapidly now, and most browsers now are updated with great frequency due to Google’s (and Mozilla’s) agressive update schedule… even if &lt;a href=&quot;http://www.techradar.com/news/internet/version-numbers-have-become-meaningless-1077921&quot; target=&quot;_blank&quot;&gt;their version numbering makes little sense&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;It is no longer a frequent occurence that you come across heavy-handed decisions made by the browser on behalf of the user and the web designer/programmer. But as I will show, it does still happen.&lt;/p&gt;
 
@@ -522,43 +661,4 @@ Failures:
 
 &lt;h2 id=&quot;for-more-info&quot;&gt;For more info…&lt;/h2&gt;
 
-&lt;p&gt;You can read more on the &lt;a href=&quot;https://github.com/rgeraldporter/birdbrain/&quot; target=&quot;_blank&quot;&gt;GitHub repo&lt;/a&gt;, and can even comment or contribute ideas.&lt;/p&gt;</content><category term="birding" /><category term="Javascript" /><category term="nature" /><category term="ornithology" /><category term="digital naturalist tools" /><category term="JSON" /><summary type="html">A JavaScript library for working with avian species names and banding codes in the ABA region.</summary></entry><entry><title type="html">Evening Grosbeaks: Where are they now?</title><link href="http://localhost:4000/evgr-pufi/" rel="alternate" type="text/html" title="Evening Grosbeaks: Where are they now?" /><published>2016-10-28T00:00:00-04:00</published><updated>2016-10-28T00:00:00-04:00</updated><id>http://localhost:4000/evgr-pufi</id><content type="html" xml:base="http://localhost:4000/evgr-pufi/">&lt;p class=&quot;notice&quot;&gt;In 2015, I took on the role of coordinator &amp;amp; compiler of the &lt;a href=&quot;http://hamiltonnature.org/birding/counts/christmas-bird-count/&quot; target=&quot;_blank&quot;&gt;Hamilton Christmas Bird Count (HCBC)&lt;/a&gt; for the Hamilton Naturalists’ Club. Lately I’ve been poring through the vast amounts of data accumulated over the decades. In a series of short posts, I explore how the Christmas Bird Count records can reveal some interesting facts about bird species in Hamilton.&lt;/p&gt;
-
-&lt;p&gt;If you speak to anyone who has been engaged with the Christmas Bird Count in Southern Ontario for more than twenty years, and ask about what they miss the most about the earlier counts, there’s a good chance the subject of grosbeaks will come up. There was a time when the large yellow Evening Grosbeaks, and sometimes their pinkish cousins the Pine Grosbeak, were bound to show up in large flocks for the winter.&lt;/p&gt;
-
-&lt;p&gt;Those times appear to have passed, and though it isn’t entirely clear yet why that is, there are many theories.&lt;/p&gt;
-
-&lt;figure&gt;
-	&lt;a href=&quot;/assets/img/cbc-onha/evgr-pufi.png&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/evgr-pufi.png&quot; /&gt;&lt;/a&gt;
-	&lt;figcaption&gt;Hamilton Christmas Bird Count records, 1953-2015.&lt;/figcaption&gt;
-&lt;/figure&gt;
-
-&lt;p&gt;From the 1960s through the mid-1980s, most years had occurrences of Evening Grosbeaks, and the count for the species in some of those years numbered in the hundreds.&lt;/p&gt;
-
-&lt;p&gt;As a comparison, the Purple Finch (another “winter finch”), has seen decline but not as extreme as Evening Grosbeaks. Between 1990 and 2010, only two Evening Grosbeaks were counted in total; whereas Purple Finches have occurred regularly, although their count is usually in single-digit numbers.&lt;/p&gt;
-
-&lt;p&gt;(Purple Finch observations since the 1980s may also be artificially lowered due to the recent over-abundance of the similar-looking introduced species, House Finch.)&lt;/p&gt;
-
-&lt;figure&gt;
-	&lt;a href=&quot;/assets/img/cbc-onha/purple-finch.jpg&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/purple-finch.jpg&quot; /&gt;&lt;/a&gt;
-	&lt;figcaption&gt;Purple Finch, Sulphur Spring Conservation Area, Hanover, Ontario&lt;/figcaption&gt;
-&lt;/figure&gt;
-
-&lt;p&gt;So where did the Evening Grosbeaks go?&lt;/p&gt;
-
-&lt;p&gt;Some theories are &lt;a href=&quot;http://www.birdsource.org/Features/Evegro/&quot; target=&quot;_blank&quot;&gt;pointing to the warmer winters&lt;/a&gt; – the Evening Grosbeak need not come as far south anymore to survive the winter. Certainly there’s been a noted increase in winter populations in the “cottage country” regions of Ontario, with many more of these grosbeaks appearing at feeders than ever had previously.&lt;/p&gt;
-
-&lt;p&gt;It’s also possible that the feeders themselves are partly responsible. With the greatly increased human population of the Muskokas and surrounding regions, the number of feeders must have certainly gone up dramatically.&lt;/p&gt;
-
-&lt;p&gt;One other possibility is that the population(s) of Evening Grosbeaks that once visited Southern Ontario in flocks has been either wiped out or greatly diminished, leaving the only visitors either migrants that are headed further south to upstate New York or vagrants that have strayed from their flocks. This wouldn’t be unprecidented: winter populations of Field Sparrows, Eastern Meadowlarks, and White-winged Crossbills once were quite common and are now gone or very sporatic.&lt;/p&gt;
-
-&lt;p&gt;There’s plenty of theories out there, as &lt;a href=&quot;http://blog.aba.org/2012/03/what-is-happening-to-evening-grosbeaks.html&quot; target=&quot;_blank&quot;&gt;this ABA Blog article&lt;/a&gt; points out it could be climate change, pesticides, cars, resource development, or even increased window collisions.&lt;/p&gt;
-
-&lt;p&gt;There is some hope of their return. In 2014-2015, a small flock overwintered in &lt;a href=&quot;https://www.youtube.com/watch?v=EXnMALj8t9I&quot; target=&quot;_blank&quot;&gt;Toronto’s High Park bird sanctuary&lt;/a&gt; (video link), and that same year saw 6 of these grosbeaks counted in the HCBC.&lt;/p&gt;
-
-&lt;p&gt;Out of the over 250 species I’ve seen within Hamilton, Evening Grosbeak is not one of them. I’m hoping soon that changes.&lt;/p&gt;
-
-&lt;figure&gt;
-	&lt;a href=&quot;/assets/img/cbc-onha/evening-grosbeak2.jpg&quot;&gt;&lt;img src=&quot;/assets/img/cbc-onha/evening-grosbeak2.jpg&quot; /&gt;&lt;/a&gt;
-	&lt;figcaption&gt;Evening Grosbeak, High Park, Toronto, Ontario&lt;/figcaption&gt;
-&lt;/figure&gt;</content><category term="birding" /><category term="Christmas Bird Count" /><category term="nature" /><category term="ornithology" /><category term="Evening Grosbeak" /><category term="Purple Finch" /><category term="Hamilton&amp;#44; Ontario" /><category term="Toronto&amp;#44; Ontario" /><category term="bird records" /><summary type="html">A once-abundant winter finch has all but dissapeared from Hamilton.</summary></entry></feed>
+&lt;p&gt;You can read more on the &lt;a href=&quot;https://github.com/rgeraldporter/birdbrain/&quot; target=&quot;_blank&quot;&gt;GitHub repo&lt;/a&gt;, and can even comment or contribute ideas.&lt;/p&gt;</content><category term="birding" /><category term="Javascript" /><category term="nature" /><category term="ornithology" /><category term="digital naturalist tools" /><category term="JSON" /><summary type="html">A JavaScript library for working with avian species names and banding codes in the ABA region.</summary></entry></feed>
