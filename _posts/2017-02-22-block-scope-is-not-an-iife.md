@@ -158,7 +158,7 @@ $traceurRuntime.ModuleStore.getAnonymousModule(function() {
 });
 {% endhighlight %}
 
-Why Babel and Traceur don't just convert the block into an IIFE, I'm not sure. Certainly if you've declared you'd like the block handled strictly, I would think that is enough to infer that transpiliting to an IIFE.
+Why Babel and Traceur don't just convert the block into an IIFE, I'm not sure. Certainly if you've declared you'd like the block handled strictly, I would think that is enough to infer that transpiling it to an IIFE.
 
 For Babel, the only way to get a more correct result is to use the ES2016 setting, however that may be making too much of an assumption about the freshness of your users browsers.
 
