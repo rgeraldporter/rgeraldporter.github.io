@@ -1,4 +1,62 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-02-22T21:43:25-05:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Beware: Using Javascript’s Block Scope as an IIFE can be… Iffy</title><link href="http://localhost:4000/block-scope-is-not-an-iife/" rel="alternate" type="text/html" title="Beware: Using Javascript's Block Scope as an IIFE can be... Iffy" /><published>2017-02-22T00:00:00-05:00</published><updated>2017-02-22T00:00:00-05:00</updated><id>http://localhost:4000/block-scope-is-not-an-iife</id><content type="html" xml:base="http://localhost:4000/block-scope-is-not-an-iife/">&lt;p&gt;The advent of &lt;a href=&quot;http://es6-features.org/&quot; target=&quot;_blank&quot;&gt;ES6 Javascript&lt;/a&gt; brought many game-changing features that were desperately needed in the language. The introduction of &lt;code class=&quot;highlighter-rouge&quot;&gt;let&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;const&lt;/code&gt; are especially important, as they allowed for better control over variables and scoping.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-06-06T21:42:56-04:00</updated><id>http://localhost:4000//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Safari 11 Gives Web Standards a Boost</title><link href="http://localhost:4000/safari-11/" rel="alternate" type="text/html" title="Safari 11 Gives Web Standards a Boost" /><published>2017-06-06T00:00:00-04:00</published><updated>2017-06-06T00:00:00-04:00</updated><id>http://localhost:4000/safari-11</id><content type="html" xml:base="http://localhost:4000/safari-11/">&lt;p&gt;On June 5, Apple announced their annual update to various products at the WWDC 2017 Conference during their &lt;a href=&quot;https://www.apple.com/apple-events/june-2017/&quot; target=&quot;_blank&quot;&gt;keynote session&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;While a lot gets presented at these keynotes each year, rarely do web-based technologies get much attention beyond performance benchmarks and user experience tweaks. Web developers generally need to hunt down the release notes, download the beta releases, and give the browsers a try themselves.&lt;/p&gt;
+
+&lt;p&gt;The reason I say “browsers” and not “browser”, is &lt;em&gt;mobile&lt;/em&gt; Safari and &lt;em&gt;desktop&lt;/em&gt; Safari are slightly different in capabilities.&lt;/p&gt;
+
+&lt;p&gt;Thankfully, for nearly a year now the WebKit team have been releasing regular “&lt;a href=&quot;https://developer.apple.com/safari/technology-preview/&quot; target=&quot;_blank&quot;&gt;Safari Technology Preview&lt;/a&gt;” builds that can be used to test forthcoming features for desktop Safari.&lt;/p&gt;
+
+&lt;p&gt;For mobile Safari however, developers can only guess which features may or may not come out with the next iOS. There are no stand-alone mobile previews to download, and until a new iOS beta comes out we can’t know what features Apple plans on allowing into the next mobile browser version.&lt;/p&gt;
+
+&lt;p&gt;Not everything that makes it to the desktop is added to the mobile version. One of the most notable features missing from mobile Safari is Web Notifications, of which the desktop version has enjoyed for years now.&lt;/p&gt;
+
+&lt;h3 id=&quot;whats-new-for-safari-11&quot;&gt;What’s new for Safari 11&lt;/h3&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://developer.apple.com/library/content/releasenotes/General/WhatsNewInSafari/Safari_11_0/Safari_11_0.html&quot; target=&quot;_blank&quot;&gt;official Safari 11 release notes&lt;/a&gt; include the following that are of interest to me:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;WebRTC implementation for conferencing&lt;/li&gt;
+  &lt;li&gt;getUserMedia/Stream API - browser can now access video &amp;amp; audio directly in real-time&lt;/li&gt;
+  &lt;li&gt;Web Assembly (this alone is huge!)&lt;/li&gt;
+  &lt;li&gt;updated WebKit support for home screen web apps&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Of those, the combination of WebRTC and Stream API finally give the web some more equal playing ground with native apps when it comes to working with the camera and microphone. Until Safari 11, the only way one could work with either of these was through file uploads – you could take a photo, record a video, but any processing of data in either media would have to be done after the recording was done.&lt;/p&gt;
+
+&lt;p&gt;With these updates, real-time reactions to the content – such as making a QR code scanner, or streaming a voice message direct to a server as you talk are finally possible. This also opens up Augmented Reality (AR) possibilities as well, especially with the huge added processing firepower that comes with Web Assembly.&lt;/p&gt;
+
+&lt;h3 id=&quot;web-standards&quot;&gt;Web Standards&lt;/h3&gt;
+
+&lt;p&gt;None of these features would be very interesting for me if Safari wasn’t the last hold-out of these standards. With the release of Safari 11, WebRTC and Stream API are real, implemented cross-platform standards. (Web Assembly is really close, with Microsoft Edge browser as the last hold-out – and that won’t be for long as I’d expect to see it in Edge 16.)&lt;/p&gt;
+
+&lt;h3 id=&quot;playing-with-safari-110&quot;&gt;Playing with Safari 11.0&lt;/h3&gt;
+
+&lt;p&gt;I’ve played around a bit with Safari on the iOS 11 Beta, and there’s a few interesting finds I’ve had…&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The User-Agent String diverges from desktop
+    &lt;ul&gt;
+      &lt;li&gt;Strangely, while it does indicate iOS 11 in the string, it identifies as Safari 10.0. This might not be a mistake: iOS 10.1, 10.2, 10.3 all identified as using Safari 10.0 even though iOS 10.3 used Safari 10.1. This would be far from the first time a browser has decided to do &lt;a href=&quot;https://www.nczonline.net/blog/2010/01/12/history-of-the-user-agent-string/&quot; target=&quot;_blank&quot;&gt;strange things in the user agent string&lt;/a&gt;. Why would they do this? No ideas.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;getUserMedia (Stream API) doesn’t entirely match the &lt;a href=&quot;https://www.w3.org/TR/mediacapture-streams/#def-constraint-facingMode&quot; target=&quot;_blank&quot;&gt;W3C spec&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Stream API’s &lt;code class=&quot;highlighter-rouge&quot;&gt;facingMode&lt;/code&gt; constraint does not use the standard &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;environment&lt;/code&gt; keywords to refer to the front-facing and rear-facing camera as per the W3C recommendation. While &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; works for front-facing, &lt;code class=&quot;highlighter-rouge&quot;&gt;environment&lt;/code&gt; also utilizes the front-facing camera – it shouldn’t, it should face the “environment”. To use the rear camera, the keyword &lt;code class=&quot;highlighter-rouge&quot;&gt;rear&lt;/code&gt; must be used. (I’m not convinced &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; is actually accepted necessarily, but anything other than &lt;code class=&quot;highlighter-rouge&quot;&gt;rear&lt;/code&gt; seems to fallback on front-facing – my bet is Safari prefers &lt;code class=&quot;highlighter-rouge&quot;&gt;front&lt;/code&gt;.)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;StreamAPI continutes to work in the background if you switch tabs
+    &lt;ul&gt;
+      &lt;li&gt;You can continue streaming audio &amp;amp; video while browsing another tab in Safari, though you cannot leave Safari entirely while doing so. If you multi-task and open a second app alongside Safari, it seems to pause the streaming, though I’m not 100% sure of this&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Home screen web apps attempt to resume when restored, but crash
+    &lt;ul&gt;
+      &lt;li&gt;In all previous iOS versions, “home screen” (fullscreen) web apps would restart anytime you switched away from them to another app. In iOS 11 this does not happen… but it does happen. Rather than immediately restarting the web app over again, it appears to briefly attempt to restore it, then crashes to the home screen. Then you have to launch it again. I hope web app sessions can be switched to, and that the crash is just a bug.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These are what I’ve found so far. I plan on following up with a proof-of-concept cross-platform QR scanner to demonstrate how Stream API can be used. I’ve done a few tests, and it is pretty quick. I would love to try and make it even faster with a compiled Web Assembly module, but that would probably take much more time.&lt;img src=&quot;http://robporter.ca/assets/img/feather-7.svg&quot; style=&quot;width:33px;height:33px;display:inline;padding-left:6px&quot; /&gt;&lt;/p&gt;</content><category term="Javascript" /><category term="ES6" /><category term="Safari" /><category term="iOS" /><category term="mobile" /><category term="Programming" /><category term="browsers" /><summary type="html">With the release of Safari 11, WebRTC and Stream API are real, implemented cross-platform standards</summary></entry><entry><title type="html">Beware: Using Javascript’s Block Scope as an IIFE can be… Iffy</title><link href="http://localhost:4000/block-scope-is-not-an-iife/" rel="alternate" type="text/html" title="Beware: Using Javascript's Block Scope as an IIFE can be... Iffy" /><published>2017-02-22T00:00:00-05:00</published><updated>2017-02-22T00:00:00-05:00</updated><id>http://localhost:4000/block-scope-is-not-an-iife</id><content type="html" xml:base="http://localhost:4000/block-scope-is-not-an-iife/">&lt;p&gt;The advent of &lt;a href=&quot;http://es6-features.org/&quot; target=&quot;_blank&quot;&gt;ES6 Javascript&lt;/a&gt; brought many game-changing features that were desperately needed in the language. The introduction of &lt;code class=&quot;highlighter-rouge&quot;&gt;let&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;const&lt;/code&gt; are especially important, as they allowed for better control over variables and scoping.&lt;/p&gt;
 
 &lt;p&gt;Another celebrated new feature was the introduction of &lt;strong&gt;block scoping&lt;/strong&gt;, which allows you to wrap any arbitrary piece of code in braces to indicate, well, a block scope.&lt;/p&gt;
 
@@ -129,7 +187,7 @@
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Why Babel and Traceur don’t just convert the block into an IIFE, I’m not sure. Certainly if you’ve declared you’d like the block handled strictly, I would think that is enough to infer that transpiliting to an IIFE.&lt;/p&gt;
+&lt;p&gt;Why Babel and Traceur don’t just convert the block into an IIFE, I’m not sure. Certainly if you’ve declared you’d like the block handled strictly, I would think that is enough to infer that transpiling it to an IIFE.&lt;/p&gt;
 
 &lt;p&gt;For Babel, the only way to get a more correct result is to use the ES2016 setting, however that may be making too much of an assumption about the freshness of your users browsers.&lt;/p&gt;
 
@@ -654,11 +712,4 @@ Failures:
 
 &lt;h2 id=&quot;read-more&quot;&gt;Read more…&lt;/h2&gt;
 
-&lt;p&gt;You can read more on the &lt;a href=&quot;https://github.com/rgeraldporter/audubon-cbc-cli&quot; target=&quot;_blank&quot;&gt;GitHub repo&lt;/a&gt;, and can even comment or contribute ideas. It currently requires some technical know-how to use, but I aim to improve that over time as the bugs get worked out.&lt;/p&gt;</content><category term="birding" /><category term="christmas bird count" /><category term="Audubon" /><category term="nature" /><category term="Node.js" /><category term="Javascript" /><category term="CSV" /><category term="bird records" /><category term="ornithology" /><category term="digital naturalist tools" /><summary type="html">Some tools for improving the usability of Audubon's CBC Data.</summary></entry><entry><title type="html">BirdBrain: A Bird Species in JSON Format</title><link href="http://localhost:4000/birdbrain/" rel="alternate" type="text/html" title="BirdBrain: A Bird Species in JSON Format" /><published>2016-10-29T00:00:00-04:00</published><updated>2016-10-29T00:00:00-04:00</updated><id>http://localhost:4000/birdbrain</id><content type="html" xml:base="http://localhost:4000/birdbrain/">&lt;h2 id=&quot;about&quot;&gt;About&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;BirdBrain&lt;/strong&gt; is a simple Javascript library for interacting with avian species names and banding codes in the ABA region.&lt;/p&gt;
-
-&lt;p&gt;Right now the API is quite simple, and the data is not fully optimized, so this library is quite large in size, and I do have some plans of making slimmed down versions that do not contain scientific names and make better use of more optimized JSON structures.&lt;/p&gt;
-
-&lt;h2 id=&quot;for-more-info&quot;&gt;For more info…&lt;/h2&gt;
-
-&lt;p&gt;You can read more on the &lt;a href=&quot;https://github.com/rgeraldporter/birdbrain/&quot; target=&quot;_blank&quot;&gt;GitHub repo&lt;/a&gt;, and can even comment or contribute ideas.&lt;/p&gt;</content><category term="birding" /><category term="Javascript" /><category term="nature" /><category term="ornithology" /><category term="digital naturalist tools" /><category term="JSON" /><summary type="html">A JavaScript library for working with avian species names and banding codes in the ABA region.</summary></entry></feed>
+&lt;p&gt;You can read more on the &lt;a href=&quot;https://github.com/rgeraldporter/audubon-cbc-cli&quot; target=&quot;_blank&quot;&gt;GitHub repo&lt;/a&gt;, and can even comment or contribute ideas. It currently requires some technical know-how to use, but I aim to improve that over time as the bugs get worked out.&lt;/p&gt;</content><category term="birding" /><category term="christmas bird count" /><category term="Audubon" /><category term="nature" /><category term="Node.js" /><category term="Javascript" /><category term="CSV" /><category term="bird records" /><category term="ornithology" /><category term="digital naturalist tools" /><summary type="html">Some tools for improving the usability of Audubon's CBC Data.</summary></entry></feed>
