@@ -24,7 +24,7 @@ My solution has been to create a process flow API that is expressive enough for 
 
 Inquiry takes a starting value (known as a "subject"), and then chains together functions that return (or resolve, in the case of Promises) either a `Pass` or a `Fail` value. These passes and fails get collected and reported at the end of the chain, to be handled however the author prefers at the end.
 
-To see how it all works, please see the documentation at: [https://github.com/rgeraldporter/inquiry-monad/blob/master/README.md]
+To see how it all works, please see the documentation at: [https://github.com/rgeraldporter/inquiry-monad/blob/master/README.md](https://github.com/rgeraldporter/inquiry-monad/blob/master/README.md){:target="_blank"}
 
 The API for Inquiry has gone through many phases and experiments, and I believe it's reaching a point of being fairly solid. I still have some work to do on improving the unit tests, and I aim to be providing interactive examples before I say it's ready for production use.
 
