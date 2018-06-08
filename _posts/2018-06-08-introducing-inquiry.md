@@ -28,4 +28,4 @@ To see how it all works, please see the documentation at: [https://github.com/rg
 
 The API for Inquiry has gone through many phases and experiments, and I believe it's reaching a point of being fairly solid. I still have some work to do on improving the unit tests, and I aim to be providing interactive examples before I say it's ready for production use.
 
-It is still "early days" on this project, meaning that as long as I have the version number at `0.x` the API is not necessary written in stone, but once I feel it is stable, I will increment it to `1.x`.
+It is still "early days" on this project, meaning that as long as I have the version number at `0.x` the API is not necessary written in stone, but once I feel it is stable, I will increment it to `1.x`.<img src="http://robporter.ca/assets/img/feather-7.svg" style="width:33px;height:33px;display:inline;padding-left:6px" />
