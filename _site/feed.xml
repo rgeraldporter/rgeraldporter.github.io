@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://robporter.ca/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://robporter.ca/feed.xml" rel="self" type="application/atom+xml" /><link href="http://robporter.ca/" rel="alternate" type="text/html" /><updated>2018-06-08T15:57:13-04:00</updated><id>http://robporter.ca//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Introducing Inquiry: A process flow in Javascript</title><link href="http://robporter.ca/introducing-inquiry/" rel="alternate" type="text/html" title="Introducing Inquiry: A process flow in Javascript" /><published>2018-06-08T00:00:00-04:00</published><updated>2018-06-08T00:00:00-04:00</updated><id>http://robporter.ca/introducing-inquiry</id><content type="html" xml:base="http://robporter.ca/introducing-inquiry/">&lt;p&gt;For many years, like many Javascript coders, I’ve been using Javascript’s Promises. They are a great tool for handling code in a nice, readable flow that makes asyncronous JS much easier to read and understand.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://robporter.ca/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://robporter.ca/feed.xml" rel="self" type="application/atom+xml" /><link href="http://robporter.ca/" rel="alternate" type="text/html" /><updated>2018-06-08T16:40:44-04:00</updated><id>http://robporter.ca//</id><title type="html">Rob Porter</title><subtitle>Digital Naturalist</subtitle><entry><title type="html">Introducing Inquiry: A process flow in Javascript</title><link href="http://robporter.ca/introducing-inquiry/" rel="alternate" type="text/html" title="Introducing Inquiry: A process flow in Javascript" /><published>2018-06-08T00:00:00-04:00</published><updated>2018-06-08T00:00:00-04:00</updated><id>http://robporter.ca/introducing-inquiry</id><content type="html" xml:base="http://robporter.ca/introducing-inquiry/">&lt;p&gt;For many years, like many Javascript coders, I’ve been using Javascript’s Promises. They are a great tool for handling code in a nice, readable flow that makes asyncronous JS much easier to read and understand.&lt;/p&gt;
 
 &lt;p&gt;However, the nature of a Promise chain is vulnerable to mutation. It is quite a common practice to start a chain with one a starting value, and end the chain with no notion how the resulting value was ever produced. For those who have taken a dive into functional programming as I have, Promises begin to look like scary “non-functional” functions that have all kinds of mutations and side-effect that are not under control. These functions become something like buying groceries at a store where you’re only told the final price, and not given a receipt with line-by-line accounting of your purchases.&lt;/p&gt;
 
@@ -9,6 +9,20 @@
 &lt;p&gt;My solution has been to create a process flow API that is expressive enough for someone unfamiliar to understand what’s going on, while retaining good practices from functional programming.&lt;/p&gt;
 
 &lt;p&gt;Inquiry takes a starting value (known as a “subject”), and then chains together functions that return (or resolve, in the case of Promises) either a &lt;code class=&quot;highlighter-rouge&quot;&gt;Pass&lt;/code&gt; or a &lt;code class=&quot;highlighter-rouge&quot;&gt;Fail&lt;/code&gt; value. These passes and fails get collected and reported at the end of the chain, to be handled however the author prefers at the end.&lt;/p&gt;
+
+&lt;p&gt;An absolutely basic example looks like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const isMoreThanOne = x =&amp;gt;
+    x &amp;gt; 1 ? Pass('Is greater than 1') : Fail('Is less than or equal to 1');
+
+const result = Inquiry.subject(5)
+    .inquire(isMoreThanOne)
+    .join();
+
+console.log(result);
+// &amp;gt; {subject: Just(5), pass: Pass(['Is greater than 1']), fail: Fail([]), iou: IOU([]), informant: _ =&amp;gt; _};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;To see how it all works, please see the documentation at: &lt;a href=&quot;https://github.com/rgeraldporter/inquiry-monad/blob/master/README.md&quot; target=&quot;_blank&quot;&gt;https://github.com/rgeraldporter/inquiry-monad/blob/master/README.md&lt;/a&gt;&lt;/p&gt;
 
