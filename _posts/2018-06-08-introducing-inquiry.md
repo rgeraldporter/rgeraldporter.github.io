@@ -32,12 +32,20 @@ An absolutely basic example looks like:
 const isMoreThanOne = x =>
     x > 1 ? Pass('Is greater than 1') : Fail('Is less than or equal to 1');
 
+const isLessThanTen = x =>
+    x > 1 ? Pass('Is less than 10') : Fail('Is greater than or equal to 10');
+
+const isEven = x =>
+    x % 2 == 0 ? Pass('Is even') : Fail('Is odd');
+
 const result = Inquiry.subject(5)
     .inquire(isMoreThanOne)
+    .inquire(isLessThanTen)
+    .inquire(isEven)
     .join();
 
 console.log(result);
-// > {subject: Just(5), pass: Pass(['Is greater than 1']), fail: Fail([]), iou: IOU([]), informant: _ => _};
+// > {subject: Just(5), pass: Pass(['Is greater than 1', 'Is less than 10']), fail: Fail(['Is odd']), iou: IOU([]), informant: _ => _};
 ```
 
 To see how it all works, please see the documentation at: [https://github.com/rgeraldporter/inquiry-monad/blob/master/README.md](https://github.com/rgeraldporter/inquiry-monad/blob/master/README.md){:target="_blank"}
