@@ -28,7 +28,7 @@ Inquiry takes a starting value (known as a "subject"), and then chains together 
 
 An absolutely basic example looks like:
 
-```
+```js
 const isMoreThanOne = x =>
     x > 1 ? Pass('Is greater than 1') : Fail('Is less than or equal to 1');
 
