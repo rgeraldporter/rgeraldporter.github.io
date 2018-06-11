@@ -65,7 +65,7 @@
 
 <span class="c1">// throws an error</span>
 <span class="nx">foo</span><span class="p">();</span></code></pre></figure><h2 id="context-is-key">Context is key</h2> <p>Most discussions about block scoping are specifically referencing the use of <code class="highlighter-rouge">const</code> and <code class="highlighter-rouge">let</code> declarations within a block. This is the case where the block scope shines, out-of-the-box, without any stict mode: the ES6 declarations of <code class="highlighter-rouge">let</code>, <code class="highlighter-rouge">const</code>, and even <code class="highlighter-rouge">class</code> never leak outside of the scope.</p> <p>Let’s see what happens when I rewrite <code class="highlighter-rouge">foo()</code> as a <strong>constant function expression</strong> (CFE… can I coin that?):</p> <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="p">{</span>
-    <span class="kr">const</span> <span class="nx">foo</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">foo</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="c1">// fails, is undefined outside of the block scope</span>
