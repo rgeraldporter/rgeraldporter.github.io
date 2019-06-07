@@ -499,4 +499,4 @@ Once you have grasped completely the concepts outlined in this introduction, oth
 
 In the near future I'll be posting about some other monad modules I've been building, and how they are used, and constructed.<img src="http://robporter.ca/assets/img/feather-7.svg" style="width:33px;height:33px;display:inline;padding-left:6px" />
 
-_Want to comment? This is also posted at [dev.to](https://dev.to/rgeraldporter/building-expressive-monads-in-javascript-introduction-23b).
+_Want to comment? This is also posted at [dev.to](https://dev.to/rgeraldporter/building-expressive-monads-in-javascript-introduction-23b)._
